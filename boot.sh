@@ -17,8 +17,18 @@ ansi_art='                 ▄▄▄
 clear
 echo -e "\n$ansi_art\n"
 
-# Use custom branch if instructed, otherwise default to master
-OMARCHY_REF="${OMARCHY_REF:-debian-version}"
+# Base distro: debian (default on this branch) or arch
+OMARCHY_BASE="${OMARCHY_BASE:-debian}"
+
+if [[ $OMARCHY_BASE == "arch" ]]; then
+  OMARCHY_PM="pacman"
+  OMARCHY_REF="${OMARCHY_ARCH_REF:-quattro}"
+  export OMARCHY_MIRROR="${OMARCHY_MIRROR:-stable}"
+else
+  OMARCHY_PM="apt"
+  OMARCHY_REF="${OMARCHY_REF:-debian-version}"
+  export OMARCHY_MIRROR="${OMARCHY_MIRROR:-stable}"
+fi
 
 # Set mirror based on branch
 if [[ $OMARCHY_REF == "dev" ]]; then
@@ -29,11 +39,19 @@ else
   export OMARCHY_MIRROR=stable
 fi
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git
+if [[ $OMARCHY_PM == "apt" ]]; then
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git
+else
+  sudo pacman -Sy --noconfirm
+fi
 
-# Use custom repo if specified, otherwise default to alfonsocv12/omarchy
-OMARCHY_REPO="${OMARCHY_REPO:-alfonsocv12/omarchy}"
+# Use custom repo if specified, otherwise default to the base distro's repo
+if [[ $OMARCHY_BASE == "arch" ]]; then
+  OMARCHY_REPO="${OMARCHY_REPO:-omacom/omarchy}"
+else
+  OMARCHY_REPO="${OMARCHY_REPO:-alfonsocv12/omarchy}"
+fi
 
 echo -e "\nCloning Omarchy from: https://github.com/${OMARCHY_REPO}.git"
 rm -rf ~/.local/share/omarchy/

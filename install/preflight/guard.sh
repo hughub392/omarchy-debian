@@ -20,7 +20,11 @@ if [[ $(uname -m) != "x86_64" ]]; then
 fi
 
 # Must have secure boot disabled
-if bootctl status 2>/dev/null | grep -q 'Secure Boot: enabled'; then
+if command -v mokutil &>/dev/null; then
+  if mokutil --sb-state 2>/dev/null | grep -qi "enabled"; then
+    abort "Secure Boot disabled"
+  fi
+elif bootctl status 2>/dev/null | grep -q 'Secure Boot: enabled'; then
   abort "Secure Boot disabled"
 fi
 
@@ -29,11 +33,15 @@ if dpkg-query -W -f='${Status}' gnome-shell 2>/dev/null | grep -q "ok installed"
   abort "Fresh + Vanilla Debian"
 fi
 
-# Must have limine installed
-command -v limine &>/dev/null || abort "Limine bootloader"
+# Must have a bootloader installed (GRUB on Debian, Limine where used)
+if ! command -v grub-install &>/dev/null && ! command -v limine &>/dev/null; then
+  abort "Bootloader not found"
+fi
 
-# Must have btrfs root filesystem
-[[ $(findmnt -n -o FSTYPE /) = "btrfs" ]] || abort "Btrfs root filesystem" 
+# Must have a supported root filesystem (ext4 or btrfs on Debian)
+if [[ $(findmnt -n -o FSTYPE /) != "ext4" ]] && [[ $(findmnt -n -o FSTYPE /) != "btrfs" ]]; then
+  abort "Root filesystem"
+fi
 
 # Cleared all guards
 echo "Guards: OK"

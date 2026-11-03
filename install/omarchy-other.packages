@@ -4,19 +4,20 @@
 autoconf-archive
 build-essential
 btrfs-progs
-dart
+# dart is not yet packaged in Debian, skipping for now
 dkms
 git
 htop
 intltool
 iwd
-openjdk-17-jdk
+openjdk-21-jdk
 libpulse0
 sassc
 intel-media-va-driver
 linux-image-amd64
-linux-firmware-free
+linux-firmware
 linux-headers-amd64
+# nvidia-driver lives in the Debian non-free repository
 nvidia-driver
 pipewire
 pipewire-alsa
@@ -32,4 +33,4 @@ zram-tools
 mesa-vulkan-drivers
 
 # Surface laptop support packages
-firmware-marvell
+# firmware-marvell is not packaged in Debian, skipping for now

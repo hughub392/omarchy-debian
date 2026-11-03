@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Update the package sources and upgrade all packages.
+# On Debian this refreshes apt; on Arch it switches release channels.
+
+if grep -q '^ID=debian$' /etc/os-release 2>/dev/null; then
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update
+  sudo DEBIAN_FRONTEND=noninteractive apt-get full-upgrade -y
+  exit 0
+fi
+
 # Overwrite the package configuration for /etc/pacman with the Omarchy default of using its dedicated mirrors and repositories, then update all packages.
 # This is used after switching between Omarchy release channels to ensure the right packages for the right channel are available.
 

@@ -1,13 +1,7 @@
 #!/bin/bash
 
 # Update AUR packages if any are installed
-if pacman -Qem >/dev/null; then
-  if omarchy-pkg-aur-accessible; then
-    echo -e "\e[32m\nUpdate AUR packages\e[0m"
-    yay -Sua --noconfirm --cleanafter --ignore gcc14,gcc14-libs
-    echo
-  else
-    echo -e "\e[31m\nAUR is unavailable (so skipping updates)\e[0m"
-    echo
-  fi
-fi
+# The AUR does not exist on Debian, so there is nothing to update here.
+
+echo "AUR updates skipped (AUR is Arch-only)."
+exit 0

@@ -3,4 +3,9 @@
 set -e
 
 echo -e "\e[32m\nUpdate system packages\e[0m"
-sudo pacman -Syyu --noconfirm
+if grep -q '^ID=debian$' /etc/os-release 2>/dev/null; then
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update
+  sudo DEBIAN_FRONTEND=noninteractive apt-get full-upgrade -y
+else
+  sudo pacman -Syyu --noconfirm
+fi

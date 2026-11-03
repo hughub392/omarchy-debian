@@ -1,16 +1,5 @@
-# Temporarily disable mkinitcpio hooks to prevent multiple regenerations during package installation
-# This speeds up installation significantly
+# Debian does not use mkinitcpio; initramfs-tools handles kernel hooks through
+# dpkg maintainer scripts, so there are no pacman hooks to disable on Debian.
 
-echo "Temporarily disabling mkinitcpio hooks during installation..."
-
-# Move the specific mkinitcpio pacman hooks out of the way if they exist
-if [[ -f /usr/share/libalpm/hooks/90-mkinitcpio-install.hook ]]; then
-  sudo mv /usr/share/libalpm/hooks/90-mkinitcpio-install.hook /usr/share/libalpm/hooks/90-mkinitcpio-install.hook.disabled
-fi
-
-if [[ -f /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook ]]; then
-  sudo mv /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook.disabled
-fi
-
-echo "mkinitcpio hooks disabled"
+echo "mkinitcpio not used on Debian, skipping hook disable."
 
